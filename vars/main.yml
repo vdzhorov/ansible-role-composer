@@ -1,0 +1,5 @@
+---
+
+composer_url: 'https://getcomposer.org/installer'
+install_dir: '/usr/local/bin'
+filename: 'composer'

@@ -1,0 +1,30 @@
+---
+
+- name: Check if composer was already installed
+  stat:
+    path: /usr/local/bin/composer
+  register: composer
+
+- name: Download composer
+  get_url:
+    url: "{{ composer_url }}"
+    dest: /usr/local/src/composer-setup.php
+    owner: root
+    group: root
+    mode: 0755
+  when: not composer.stat.exists
+
+- name: Install composer
+  command: "php /usr/local/src/composer-setup.php --install-dir={{ install_dir }} --filename={{ filename }}"
+  when: not composer.stat.exists
+
+- name: Set correct permissions to composer binary {{ install_dir }}/{{ filename }}
+  file:
+    path: "{{ install_dir }}/{{ filename }}"
+    mode: 0755
+
+- name: Remove installer file
+  file:
+    path: /usr/local/src/composer-setup.php
+    state: absent
+  when: not composer.stat.exists
